@@ -34,7 +34,8 @@ while True:
 # If the flag was setting to 'y', the ask for a directory, if the directory doesn't exist then it will by default
 # place the downloaded images/webms to the current working directory (in other words, where this application sits)
 if cust_dir_response == "y":
-    custom_directory = input("Please input your directory (absolute path)")
+    custom_directory = input("Please input your directory (absolute path, make sure the path ends with '/', '\'' if "
+                             "on windows)")
 
 print("Downloading all the images from " + url)
 response = urllib.request.urlopen(url)
@@ -61,13 +62,14 @@ while True:
         # removing the " character used to preserve the link during the find between. This was done because we searched
         # for everything between href=" and the blank space after the closing ". This is due to the behavior of the
         # function.
-        if img_filename != "" and img_url.replace("\"", "") != "" \
-                and not os.path.isfile(img_filename):
-            print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
-            urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
+        if img_filename != "" and img_url.replace("\"", "") != "":
             # If we set the custom directory to on, then we'll download the image to the specified directory
-            if cust_dir_response == "y":
+            if cust_dir_response == "y" and not os.path.isfile(custom_directory + img_filename):
+                urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
                 os.rename(os.path.abspath(img_filename), custom_directory + img_filename)
+            elif cust_dir_response == "n" and not os.path.isfile(img_filename):
+                print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
+                urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
 
     # Downloads any spoilered images by the same means as an unspoilered, the only thing that changed between this and
     # the above is the tag we are looking for now.
@@ -75,9 +77,11 @@ while True:
         img_url = "https:" + find_between(str(html), "<a class=\"fileThumb\" href=\"", " ")
         board = find_between(img_url, ".org/", "/") + "/"
         img_filename = find_between(img_url, board, "\"")
-        if img_filename != "" and img_url.replace("\"","") != "" \
-                and not os.path.isfile(img_filename):
-            print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
-            urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
-            if cust_dir_response == "y":
+        if img_filename != "" and img_url.replace("\"", "") != "":
+            if cust_dir_response == "y" and not os.path.isfile(custom_directory + img_filename):
+                print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
+                urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
                 os.rename(os.path.abspath(img_filename), custom_directory + img_filename)
+            elif cust_dir_response == "n" and not os.path.isfile(img_filename):
+                print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
+                urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
