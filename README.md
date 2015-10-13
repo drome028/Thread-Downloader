@@ -1,35 +1,4 @@
 # Thread-Downloader
- _  _       _                 
-| || |     | |                
-| || |_ ___| |__   __ _ _ __  
-|__   _/ __| '_ \ / _` | '_ \ 
-   | || (__| | | | (_| | | | |
-   |_| \___|_| |_|\__,_|_| |_|
-                              
-                              
- _______ _                        _ 
-|__   __| |                      | |
-   | |  | |__  _ __ ___  __ _  __| |
-   | |  | '_ \| '__/ _ \/ _` |/ _` |
-   | |  | | | | | |  __/ (_| | (_| |
-   |_|  |_| |_|_|  \___|\__,_|\__,_|
-                                    
-                                    
- _____                      _       
-|  __ \                    | |      
-| |  | | _____      ___ __ | | ___  
-| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ 
-| |__| | (_) \ V  V /| | | | | (_) |
-|_____/ \___/ \_/\_/ |_| |_|_|\___/ 
-                                    
-                                    
-           _           
-          | |          
-  __ _  __| | ___ _ __ 
- / _` |/ _` |/ _ \ '__|
-| (_| | (_| |  __/ |   
- \__,_|\__,_|\___|_|   
-                       
 
 This tiny application will simply download all the images/webms in a thread and either download them to the directory where the application sits
 or a specified location. The application will walk you through on the specifics of using the tool.
