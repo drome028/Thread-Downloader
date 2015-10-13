@@ -16,7 +16,7 @@ KNOWN ERRORS
 ======================
 
 Some known errors include:
-  - Occasionally will get an SSL error, looking into this
+  - Occasionally will get an SSL error, looking into this. In case of this, just re-launch the tool and it will download the     remainder of the images
 
 FUTURE FEATURES
 ======================
