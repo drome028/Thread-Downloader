@@ -1,24 +1,14 @@
-import urllib.request
-import urllib
-import os.path
+import ThreadDownloaderUtilities
 from sys import platform
 __author__ = 'David Romero'
 
-
-# The find between function, all this function does is finds a substring between two specific strings pass.
-# For example, if I want to find everything between 'ba' and 'na' in 'banana'
-def find_between(s, first, last):
-    try:
-        start = s.index(first) + len(first)
-        end = s.index(last, start)
-        return s[start:end]
-    except ValueError:
-        return ""
-
+thread_downloader = ThreadDownloaderUtilities.ThreadDownloaderUtilities()
+thread_downloader.mainloop()
 # Initializing the spoiler flag and the custom directory flag
 spoiler = ""
 cust_dir_response = ""
 url = input("What's the thread's url?")
+
 
 # Validate the setting of the spoiler flag
 while True:
@@ -40,57 +30,9 @@ if cust_dir_response == "y":
     if not custom_directory.endswith("\\"):
         custom_directory += "\\" if platform == "win32" else "/"
 
-
 print("Downloading all the images from " + url)
-response = urllib.request.urlopen(url)
-# We'll be reading the opened url 500 bytes at a time that way we can carefully look for the necessary DOMs
-while True:
-    html = response.read(500)
-
-    # If there's no more content to read from the url, then we simply exit the loop
-    if not html:
-        break
-
-    # Downloads images found in the link that utilizes the fileThumb class. This is where the images are found,
-    # we will be extracting the link to the full resolution image that is to be downloaded
-    if find_between(str(html), "a class=\"fileThumb\" href=\"", " ") \
-            and not ("spoiler" in find_between(str(html), "<img src=\"//", "\"")):
-        # Extracting the link to the full res image from the tags
-        img_url = "https:" + find_between(str(html), "<a class=\"fileThumb\" href=\"", " ")
-        # Extracting the board this is coming from
-        board = find_between(img_url, ".org/", "/") + "/"
-        # Extracting the name of the image.
-        img_filename = find_between(img_url, board, "\"")
-        # If the file name and image url are not empty and if the file does not exist in the current directory
-        # then go ahead and download the image. Note that we are also
-        # removing the " character used to preserve the link during the find between. This was done because we searched
-        # for everything between href=" and the blank space after the closing ". This is due to the behavior of the
-        # function.
-        if img_filename != "" and img_url.replace("\"", "") != "":
-            if cust_dir_response == "y" and not os.path.exists(custom_directory):
-                os.makedirs(custom_directory)
-            # If we set the custom directory to on, then we'll download the image to the specified directory
-            if cust_dir_response == "y" and not os.path.isfile(custom_directory + img_filename):
-                print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
-                urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
-                os.rename(os.path.abspath(img_filename), custom_directory + img_filename)
-            elif cust_dir_response == "n" and not os.path.isfile(img_filename):
-                print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
-                urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
-
-    # Downloads any spoilered images by the same means as an unspoilered, the only thing that changed between this and
-    # the above is the tag we are looking for now.
-    if find_between(str(html), "a class=\"fileThumb imgspoiler\" href=\"", " ") and spoiler == "y":
-        img_url = "https:" + find_between(str(html), "<a class=\"fileThumb\" href=\"", " ")
-        board = find_between(img_url, ".org/", "/") + "/"
-        img_filename = find_between(img_url, board, "\"")
-        if img_filename != "" and img_url.replace("\"", "") != "":
-            if cust_dir_response == "y" and not os.path.exists(custom_directory):
-                os.makedirs(custom_directory)
-            if cust_dir_response == "y" and not os.path.isfile(custom_directory + img_filename):
-                print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
-                urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
-                os.rename(os.path.abspath(img_filename), custom_directory + img_filename)
-            elif cust_dir_response == "n" and not os.path.isfile(img_filename):
-                print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
-                urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
+if custom_directory == "" or custom_directory is None:
+    thread_downloader.thread_4chan_download(url, cust_dir_response=cust_dir_response)
+else:
+    thread_downloader.thread_4chan_download(url, cust_dir_response=cust_dir_response, custom_directory=custom_directory)
+print("Download complete")
