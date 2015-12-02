@@ -2,11 +2,11 @@ import urllib.request
 import urllib
 import os.path
 import tkinter as tk
-import tkFileDialog
 import zipfile
 __author__ = 'David'
 
 LARGE_FONT = ("Verdana", 12)
+
 
 # The find between function, all this function does is finds a substring between two specific strings pass.
 # For example, if I want to find everything between 'ba' and 'na' in 'banana'
