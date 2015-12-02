@@ -2,13 +2,11 @@ import urllib.request
 import urllib
 import os.path
 import tkinter as tk
+import tkFileDialog
 import zipfile
 __author__ = 'David'
 
 LARGE_FONT = ("Verdana", 12)
-spoiler = ""
-cust_dir_response = ""
-
 
 # The find between function, all this function does is finds a substring between two specific strings pass.
 # For example, if I want to find everything between 'ba' and 'na' in 'banana'
@@ -21,7 +19,7 @@ def find_between(s, first, last):
         return ""
 
 
-def thread_4chan_download(thread_url, custom_directory=None, cust_dir_response="n"):
+def thread_4chan_download(thread_url, custom_directory=None, cust_dir_response="n", spoiler="n"):
     response = urllib.request.urlopen(thread_url)
     # We'll be reading the opened url 500 bytes at a time that way we can carefully look for the necessary DOMs
     while True:
@@ -92,10 +90,37 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Thread Downloader", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
+        controller.geometry("450x450")
+        controller.title("Thread Downloader")
 
         url = tk.StringVar()
+        spoiler_response = tk.StringVar()
+        custom_directory_response = tk.StringVar()
         url_input_label = tk.Label(self, text="Place your url here", font=LARGE_FONT)
         url_input = tk.Entry(self, bd=5, textvariable=url)
 
         url_input_label.pack(pady=20, padx=20)
         url_input.pack()
+
+        spoilers_label = tk.Label(self, text="Do you want to download spoilers")
+        spoilers_label.pack()
+
+        yes_spoilers = tk.Radiobutton(self, text="Yes", variable=spoiler_response, value="y")
+        yes_spoilers.pack()
+
+        no_spoilers = tk.Radiobutton(self, text="No", variable=spoiler_response, value="n")
+        no_spoilers.pack()
+
+        file_browse = tk
+
+        button = tk.Button(self, text="Download", command=lambda: self.on_click(url.get(), cdr="n",
+                                                                                spoiler_res=spoiler_response.get()))
+        button.pack()
+
+    def on_click(self, url_value, cdr="n", spoiler_res="n"):
+        print(url_value + " is the url")
+        print("Spoilers? " + spoiler_res)
+        print("Custom Directory? " + cdr)
+        thread_4chan_download(url_value, spoiler=spoiler_res, cust_dir_response=cdr)
+        jobs_done_text = tk.Label(self, text="Download complete")
+        jobs_done_text.pack()
