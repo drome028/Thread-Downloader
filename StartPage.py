@@ -2,6 +2,8 @@ import urllib.request
 import urllib
 import os.path
 import tkinter as tk
+from tkinter import filedialog as fd
+from sys import platform
 import zipfile
 __author__ = 'David'
 
@@ -20,6 +22,8 @@ def find_between(s, first, last):
 
 
 def thread_4chan_download(thread_url, custom_directory=None, cust_dir_response="n", spoiler="n"):
+    if not custom_directory.endswith("\\"):
+        custom_directory += "\\" if platform == "win32" else "/"
     response = urllib.request.urlopen(thread_url)
     # We'll be reading the opened url 500 bytes at a time that way we can carefully look for the necessary DOMs
     while True:
@@ -87,6 +91,7 @@ def thread_4chan_download(thread_url, custom_directory=None, cust_dir_response="
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
+        self.custom_directory = ""
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Thread Downloader", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
@@ -111,16 +116,31 @@ class StartPage(tk.Frame):
         no_spoilers = tk.Radiobutton(self, text="No", variable=spoiler_response, value="n")
         no_spoilers.pack()
 
-        file_browse = tk
+        custom_directory_label = tk.Label(self, text="Do you want to download to a specific place?")
+        custom_directory_label.pack()
 
-        button = tk.Button(self, text="Download", command=lambda: self.on_click(url.get(), cdr="n",
-                                                                                spoiler_res=spoiler_response.get()))
+        yes_custom_directory = tk.Radiobutton(self, text="Yes", variable=custom_directory_response, command=lambda: self.custom_directory_prompt(), value="y")
+        yes_custom_directory.pack()
+
+        no_custom_directory = tk.Radiobutton(self, text="No", variable=custom_directory_response, value="n")
+        no_custom_directory.pack()
+
+        button = tk.Button(self, text="Download", command=lambda: self.on_click(url.get(), cdr=custom_directory_response.get(),
+                                                                                spoiler_res=spoiler_response.get(), cust_dir=self.custom_directory))
         button.pack()
 
-    def on_click(self, url_value, cdr="n", spoiler_res="n"):
-        print(url_value + " is the url")
-        print("Spoilers? " + spoiler_res)
-        print("Custom Directory? " + cdr)
-        thread_4chan_download(url_value, spoiler=spoiler_res, cust_dir_response=cdr)
+    def on_click(self, url_value, cdr="n", spoiler_res="n", cust_dir=""):
+        thread_4chan_download(url_value, spoiler=spoiler_res, cust_dir_response=cdr, custom_directory=cust_dir)
         jobs_done_text = tk.Label(self, text="Download complete")
         jobs_done_text.pack()
+
+    def custom_directory_prompt(self):
+        self.custom_directory = fd.askdirectory()
+        custom_directory_display = tk.Label(self, text=self.custom_directory)
+        custom_directory_display.pack()
+
+    def hide(self, event):
+        event.widget.pack_forget()
+
+    def show(self, event):
+        event.pack()
