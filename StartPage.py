@@ -4,7 +4,7 @@ import os.path
 import tkinter as tk
 from tkinter import filedialog as fd
 from sys import platform
-import zipfile
+from threading import Thread
 __author__ = 'David'
 
 LARGE_FONT = ("Verdana", 12)
@@ -87,6 +87,8 @@ def thread_4chan_download(thread_url, custom_directory=None, cust_dir_response="
                     print("Downloading " + img_filename + " from " + img_url.replace("\"", ""))
                     urllib.request.urlretrieve(img_url.replace("\"", ""), img_filename)
 
+    print("Download of " + thread_url + " complete")
+
 
 class StartPage(tk.Frame):
 
@@ -130,9 +132,10 @@ class StartPage(tk.Frame):
         button.pack()
 
     def on_click(self, url_value, cdr="n", spoiler_res="n", cust_dir=""):
-        thread_4chan_download(url_value, spoiler=spoiler_res, cust_dir_response=cdr, custom_directory=cust_dir)
-        jobs_done_text = tk.Label(self, text="Download complete")
-        jobs_done_text.pack()
+        a_download = Thread(target=thread_4chan_download, args=(url_value,), kwargs={'custom_directory': cust_dir,
+                                                                                     'cust_dir_response': cdr,
+                                                                                     'spoiler': spoiler_res})
+        a_download.start()
 
     def custom_directory_prompt(self):
         self.custom_directory = fd.askdirectory()
