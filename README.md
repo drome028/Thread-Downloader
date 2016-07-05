@@ -1,4 +1,6 @@
-# Thread-Downloader
+# 4get
+
+<b>Update: THREAD-DOWNLOADER HAS BEEN RENAMED TO 4GET!</b>
 
 This tiny application will simply download all the images/webms in a thread and either download them to the directory where the application sits
 or a specified location. The application will walk you through on the specifics of using the tool.
